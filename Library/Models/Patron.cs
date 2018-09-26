@@ -20,6 +20,14 @@ namespace Library.Models
             Id = id;
         }
 
+        public Patron(string last, string given, bool overdue, int id = 0)
+        {
+            LastName = last;
+            GivenName = given;
+            OverDue = overdue;
+            Id = id;
+        }
+
         public override bool Equals(System.Object otherPatron)
         {
             if(!(otherPatron is Patron))
@@ -154,7 +162,7 @@ namespace Library.Models
         }
 
 
-        public void Update(string last, int given)
+        public void Update(string last, string given)
         {
             MySqlConnection conn = DB.Connection();
             conn.Open();
@@ -320,9 +328,7 @@ namespace Library.Models
             {
                 conn.Dispose();
             }
-
             return amountDue;
-
         }
     }
 }

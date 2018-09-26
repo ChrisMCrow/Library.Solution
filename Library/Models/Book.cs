@@ -58,7 +58,7 @@ namespace Library.Models
             cmd.Parameters.AddWithValue("@title", this.Title);
             cmd.Parameters.AddWithValue("@cost", this.Cost);
             cmd.Parameters.AddWithValue("@currentCount", this.CurrentCount);
-            cmd.Parameters.AddWithValue("@totalCount", this.totalCount);
+            cmd.Parameters.AddWithValue("@totalCount", this.TotalCount);
 
             cmd.ExecuteNonQuery();
             Id = (int) cmd.LastInsertedId;
@@ -181,7 +181,7 @@ namespace Library.Models
             cmd.Parameters.AddWithValue("@newCost", cost);
             cmd.Parameters.AddWithValue("@searchId", this.Id);
 
-            this.Title = newTitle;
+            this.Title = title;
             this.TotalCount = totalCount;
             this.Cost = cost;
             cmd.ExecuteNonQuery();

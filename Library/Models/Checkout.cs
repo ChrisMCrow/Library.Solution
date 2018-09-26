@@ -87,13 +87,13 @@ namespace Library.Models
             while (rdr.Read())
             {
                 id = rdr.GetInt32(0);
-                bookId = rdr.GetString(1);
-                patronId = rdr.GetString(2);
+                bookId = rdr.GetInt32(1);
+                patronId = rdr.GetInt32(2);
                 checkout = rdr.GetDateTime(3);
                 due = rdr.GetDateTime(4);
                 returned = rdr.GetBoolean(5);
             }
-            Checkout foundCheckout = new Checkout(bookId, patronId, checkoutDate, dueDate, returned, id);
+            Checkout foundCheckout = new Checkout(bookId, patronId, checkout, due, returned, id);
             conn.Close();
             if (conn != null)
             {
@@ -114,12 +114,12 @@ namespace Library.Models
             while(rdr.Read())
             {
                 int id = rdr.GetInt32(0);
-                int bookId = rdr.GetString(1);
-                int patronId = rdr.GetString(2);
+                int bookId = rdr.GetInt32(1);
+                int patronId = rdr.GetInt32(2);
                 DateTime checkout = rdr.GetDateTime(3);
                 DateTime due = rdr.GetDateTime(4);
                 bool returned = rdr.GetBoolean(5);
-                Checkout foundCheckout = new Checkout(bookId, patronId, checkoutDate, dueDate, returned, id);
+                Checkout foundCheckout = new Checkout(bookId, patronId, checkout, due, returned, id);
                 allCheckouts.Add(foundCheckout);
             }
             conn.Close();

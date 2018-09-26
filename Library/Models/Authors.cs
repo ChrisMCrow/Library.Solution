@@ -147,7 +147,7 @@ namespace Library.Models
         }
 
 
-        public void Update(string last, int given)
+        public void Update(string last, string given)
         {
             MySqlConnection conn = DB.Connection();
             conn.Open();
