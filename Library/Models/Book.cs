@@ -47,6 +47,11 @@ namespace Library.Models
             }
         }
 
+        public override int GetHashCode()
+        {
+            return this.Title.GetHashCode();
+        }
+
         public void Save()
         {
             MySqlConnection conn = DB.Connection();

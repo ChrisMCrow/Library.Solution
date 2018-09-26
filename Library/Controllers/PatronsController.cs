@@ -11,5 +11,31 @@ namespace Library.Controllers
         {
             return View();
         }
+
+        [HttpPost("/patrons/details")]
+        public ActionResult LogInRedirect(string libraryNumber)
+        {
+            Patron newPatron = Patron.Find(int.Parse(libraryNumber));
+            newPatron.HasOverDue();
+            foreach (var checkout in newPatron.GetCurrentCheckouts())
+            {
+                checkout.IsReturned();
+            }
+            if (newPatron == null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Details", new {id = newPatron.Id});
+            }
+        }
+
+        [HttpGet("/patrons/{id}")]
+        public ActionResult Details(int id)
+        {
+
+            return View(Patron.Find(id));
+        }
     }
 }

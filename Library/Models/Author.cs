@@ -34,6 +34,11 @@ namespace Library.Models
             }
         }
 
+        public override int GetHashCode()
+        {
+            return this.LastName.GetHashCode();
+        }
+
         public void Save()
         {
             MySqlConnection conn = DB.Connection();
@@ -179,7 +184,7 @@ namespace Library.Models
             cmd.CommandText = @"SELECT books.* FROM authors
                 JOIN authors_books ON (authors.id = authors_books.author_id)
                 JOIN books ON (authors_books.book_id = books.id)
-                WHERE authors.id = @authorId SORT BY books.title ASC;";
+                WHERE authors.id = @authorId ORDER BY books.title ASC;";
             cmd.Parameters.AddWithValue("@authorId", this.Id);
 
             MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;

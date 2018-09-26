@@ -1,8 +1,39 @@
-<div class="container">
-    <div class="jumbotron">
-        <h1>Seattle Library</h1>
-    </div>
-    <button onclick="window.location.href='/librarians'" class='btn btn-primary'>Librarian</button>
-    <a class='btn btn-primary ml-4' href='/patrons'>Patron</a>
+@using Library.Models;
 
-</div>
+<button onclick="window.location.href='/librarians'" class='btn btn-primary ml-4'>Librarian</button>
+<a class='btn btn-primary ml-4' href='/patrons'>Patron</a>
+<br><br><br><br>
+<h2>All Books</h2>
+<br><br>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Title</th>
+      <th scope="col">Authors</th>
+      <th scope="col">Cost</th>
+      <th scope="col">Available</th>
+      <th scope="col">Total Inventory</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (Book book in Book.GetAll())
+    {
+      <tr>
+        <th scope="row">@book.Id</th>
+        <td>@book.Title</td>
+        <td>
+          @foreach (Author author in @book.GetAuthors())
+          {
+            @author.LastName
+            @(", ") @author.GivenName <br>
+          }
+        </td>
+        <td>$@book.Cost</td>
+        <td>@book.CurrentCount</td>
+        <td>@book.TotalCount</td>
+      </tr>
+    }
+  </tbody>
+</table>

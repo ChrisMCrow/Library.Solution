@@ -45,6 +45,12 @@ namespace Library.Models
             }
         }
 
+        public override int GetHashCode()
+        {
+            return this.LastName.GetHashCode();
+        }
+
+
         public void Save()
         {
             MySqlConnection conn = DB.Connection();
@@ -192,10 +198,10 @@ namespace Library.Models
 
             var cmd = conn.CreateCommand() as MySqlCommand;
             cmd.CommandText = @"SELECT checkouts.* FROM patrons
-                JOIN patrons ON (checkouts.patrons_id = patrons.id)
+                JOIN checkouts ON (checkouts.patrons_id = patrons.id)
                 WHERE checkouts.patrons_id = @patronId
                 AND returned = false
-                SORT BY due_date ASC;";
+                ORDER BY due_date ASC;";
             cmd.Parameters.AddWithValue("@patronId", this.Id);
 
             MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
@@ -230,7 +236,7 @@ namespace Library.Models
                 JOIN patrons ON (checkouts.patrons_id = patrons.id)
                 WHERE checkouts.patrons_id = @patronId
                 AND returned = true
-                SORT BY due_date ASC;";
+                ORDER BY due_date ASC;";
             cmd.Parameters.AddWithValue("@patronId", this.Id);
 
             MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
@@ -263,7 +269,7 @@ namespace Library.Models
             var cmd = conn.CreateCommand() as MySqlCommand;
             cmd.CommandText = @"SELECT checkouts.* FROM patrons
                 JOIN patrons ON (checkouts.patrons_id = patrons.id)
-                WHERE checkouts.patrons_id = @patronId SORT BY checkout_date ASC;";
+                WHERE checkouts.patrons_id = @patronId ORDER BY checkout_date ASC;";
             cmd.Parameters.AddWithValue("@patronId", this.Id);
 
             MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
@@ -295,12 +301,12 @@ namespace Library.Models
 
             var cmd = conn.CreateCommand() as MySqlCommand;
             cmd.CommandText = @"SELECT COUNT(*) FROM patrons
-                JOIN patrons ON (checkouts.patrons_id = patrons.id)
+                JOIN checkouts ON (checkouts.patrons_id = patrons.id)
                 WHERE checkouts.patrons_id = @patronId
-                AND checkouts.due_date < GETDATE();";
+                AND checkouts.due_date < NOW();";
             cmd.Parameters.AddWithValue("@patronId", this.Id);
-
             Int32 count = Convert.ToInt32(cmd.ExecuteScalar());
+            if (count > 0) {this.OverDue = true;}
             return (count > 0) ? true : false;
         }
 
@@ -310,15 +316,15 @@ namespace Library.Models
             conn.Open();
 
             var cmd = conn.CreateCommand() as MySqlCommand;
-            cmd.CommandText = @"SELECT books.cost FROM patrons
+            cmd.CommandText = @"SELECT books.* FROM patrons
                 JOIN checkouts ON (checkouts.patrons_id = patrons.id)
                 JOIN books ON (checkouts.book_id = books.id)
-                WHERE due_date < GETDATE()
+                WHERE due_date < NOW()
                 AND patrons.id = @patronId;";
             cmd.Parameters.AddWithValue("@patronId", this.Id);
 
             MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
-            float amountDue = 0f;
+            float amountDue = 0.0f;
             while(rdr.Read())
             {
                 amountDue += rdr.GetFloat(2);

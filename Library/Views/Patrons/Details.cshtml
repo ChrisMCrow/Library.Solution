@@ -1,0 +1,59 @@
+@using Library.Models;
+
+<h2>@Model.GivenName @Model.LastName details</h2>
+<hr>
+@if (Model.OverDue)
+{
+  <p class="alert-danger">ALERT: You owe $@Model.GetAmountDue() in overdue fines.</p>
+}
+<h3>Books You Currently Have Checked Out</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Authors</th>
+      <th scope="col">Checkout Date</th>
+      <th scope="col">Due Date</th>
+      <th scope="col">Cost if not returned</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (Checkout instance in @Model.GetCurrentCheckouts())
+    {
+      @if (@instance.DueDate < DateTime.Now)
+      {
+        <tr class="table-danger">
+          <td>@Book.Find(@instance.BookId).Title</td>
+          <td>
+            @foreach (Author author in @Book.Find(@instance.BookId).GetAuthors())
+            {
+              @author.LastName
+              @(", ") @author.GivenName <br>
+            }
+          </td>
+          <td>@instance.CheckoutDate</td>
+          <td>@instance.DueDate</td>
+          <td>$@Book.Find(@instance.BookId).Cost</td>
+        </tr>
+      }
+      else
+      {
+        <tr>
+          <td>@Book.Find(@instance.BookId).Title</td>
+          <td>
+            @foreach (Author author in @Book.Find(@instance.BookId).GetAuthors())
+            {
+              @author.LastName
+              @(", ") @author.GivenName <br>
+            }
+          </td>
+          <td>@instance.CheckoutDate</td>
+          <td>@instance.DueDate</td>
+          <td>$@Book.Find(@instance.BookId).Cost</td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>
+<br><br>
+<a class='btn btn-info ml-3' href='/'>Home</a>

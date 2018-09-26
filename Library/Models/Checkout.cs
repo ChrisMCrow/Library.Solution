@@ -14,13 +14,12 @@ namespace Library.Models
         public DateTime DueDate {get; set;}
         public bool Returned {get; set;}
 
-        public Checkout(int bookId, int patronId, DateTime checkoutDate, DateTime dueDate, bool returned, int id = 0)
+        public Checkout(int bookId, int patronId, DateTime checkoutDate, DateTime dueDate, bool returned = false, int id = 0)
         {
             BookId = bookId;
             PatronId = patronId;
             CheckoutDate = checkoutDate;
             DueDate = dueDate;
-            Returned = returned;
             Id = id;
         }
 
@@ -41,6 +40,11 @@ namespace Library.Models
                 bool returnedEquality = this.Returned.Equals(newCheckout.Returned);
                 return (bookIdEquality && patronIdEquality && idEquality && checkoutDateEquality && dueDateEquality && returnedEquality);
             }
+        }
+
+        public override int GetHashCode()
+        {
+            return this.BookId.GetHashCode();
         }
 
         public void Save()
@@ -173,7 +177,7 @@ namespace Library.Models
             conn.Open();
 
             var cmd = conn.CreateCommand() as MySqlCommand;
-            cmd.CommandText = @"UPDATE patrons SET returned = true WHERE id = @searchId;";
+            cmd.CommandText = @"UPDATE patrons SET returned = 1 WHERE id = @searchId;";
 
             cmd.Parameters.AddWithValue("@searchId", this.Id);
 
@@ -184,6 +188,50 @@ namespace Library.Models
             if (conn != null)
             {
                 conn.Dispose();
+            }
+        }
+
+        public void IsReturned()
+        {
+            MySqlConnection conn = DB.Connection();
+            conn.Open();
+
+            var cmd = conn.CreateCommand() as MySqlCommand;
+            cmd.CommandText = @"SELECT * FROM checkouts WHERE id = @checkoutId;";
+            cmd.Parameters.AddWithValue("@checkoutId", this.Id);
+
+            var rdr = cmd.ExecuteReader() as MySqlDataReader;
+            int id = 0;
+            int bookId = 0;
+            int patronId = 0;
+            DateTime checkout = DateTime.MinValue;
+            DateTime due = DateTime.MinValue;
+            bool returned = false;
+            while (rdr.Read())
+            {
+                id = rdr.GetInt32(0);
+                bookId = rdr.GetInt32(1);
+                patronId = rdr.GetInt32(2);
+                checkout = rdr.GetDateTime(3);
+                due = rdr.GetDateTime(4);
+                returned = rdr.GetBoolean(5);
+            }
+            Checkout newCheckout = new Checkout(bookId, patronId, checkout, due, returned, id);
+            conn.Close();
+
+            if (returned == false && due < DateTime.Now)
+            {
+                conn.Open();
+                Console.WriteLine("id" + this.Id + " returned" + returned + " patronID" + this.PatronId);
+                cmd.CommandText = @"UPDATE patrons SET patrons.overdue = 1 WHERE patrons.id = @patronId;";
+                cmd.Parameters.AddWithValue("@patronId", newCheckout.PatronId);
+                cmd.ExecuteNonQuery();
+            }
+
+            conn.Close();
+            if (conn != null)
+            {
+              conn.Dispose();
             }
         }
     }
