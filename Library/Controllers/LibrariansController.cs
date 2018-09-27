@@ -19,13 +19,13 @@ namespace Library.Controllers
             return RedirectToAction("Details");
         }
 
+
+// CHECKOUT
         [HttpGet("/librarians/dashboard")]
         public ActionResult Details()
         {
             return View();
         }
-
-
         [HttpPost("/librarians/checkout")]
         public ActionResult CreateCheckout(string bookId, string patronId, string dueDate)
         {
@@ -39,14 +39,12 @@ namespace Library.Controllers
             Console.WriteLine(thisBook.CurrentCount);
             return View("Details", newCheckout);
         }
-
         [HttpPost("/librarians/return/lookup")]
         public ActionResult LookupCheckout(string patronId)
         {
             List<Checkout> patronCheckouts = Patron.Find(int.Parse(patronId)).GetCurrentCheckouts();
             return View("Details", patronCheckouts);
         }
-
         [HttpPost("/librarians/return")]
         public ActionResult ReturnBook(string checkoutId)
         {
@@ -57,6 +55,8 @@ namespace Library.Controllers
             return View("Details", checkoutToReturn);
         }
 
+
+//CARDHOLDERS
         [HttpGet("/librarians/cardholder")]
         public ActionResult CardHolders()
         {
@@ -86,6 +86,67 @@ namespace Library.Controllers
             return View("CardHolders", foundPatron);
         }
 
+        [HttpGet("/librarians/books")]
+        public ActionResult Books()
+        {
+            return View();
+        }
 
+        [HttpPost("/librarians/books/add")]
+        public ActionResult AddBook(string title, string author1, string author2, string cost, string totalCount)
+        {
+            float costFloat = float.Parse(cost);
+            int totalInt = int.Parse(totalCount);
+            Book newBook = new Book(title, totalInt, costFloat);
+            newBook.Save();
+            if (author1 != null)
+            {
+                int author1Id = int.Parse(author1);
+                newBook.AddAuthor(author1Id);
+            }
+            if (author2 != null)
+            {
+                int author2Id = int.Parse(author2);
+                newBook.AddAuthor(author2Id);
+            }
+            return RedirectToAction("Books");
+        }
+
+        [HttpGet("/librarians/books/lookup")]
+        public ActionResult LookupBook(int id)
+        {
+            Book foundBook = Book.Find(id);
+            return View("Books", foundBook);
+        }
+
+
+        [HttpPost("/librarians/books/lookup")]
+        public ActionResult LookupBook(string bookId)
+        {
+            Book foundBook = Book.Find(int.Parse(bookId));
+            return View("Books", foundBook);
+        }
+
+        [HttpPost("/librarians/books/update/{id}")]
+        public ActionResult UpdateBook(string title, string author, string cost, string totalCount, int id)
+        {
+            Book foundBook = Book.Find(id);
+            float costFloat = float.Parse(cost);
+            int totalInt = int.Parse(totalCount);
+            foundBook.Update(title, totalInt, costFloat);
+            if (author != null)
+            {
+                int authorId = int.Parse(author);
+                foundBook.AddAuthor(authorId);
+            }
+            return View("Books", foundBook);
+        }
+
+        [HttpGet("/librarians/books/{bookId}/delete/{authorId}")]
+        public ActionResult RemoveBookAuthor(int bookId, int authorId)
+        {
+            Author.RemoveBookAuthor(bookId, authorId);
+            return RedirectToAction("LookupBook", new{id = bookId});
+        }
     }
 }

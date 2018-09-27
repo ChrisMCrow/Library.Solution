@@ -1,0 +1,139 @@
+@using Library.Models;
+
+<h2>Librarian Dashboard</h2>
+<hr>
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href='/librarians/dashboard'>Checkouts</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/librarians/cardholder">Card Holders</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active">Books</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/librarians/authors">Authors</a>
+  </li>
+</ul>
+<br><br>
+
+<!-- Confirmation Alert-->
+@if (@Model != null)
+{
+  <div class='alert-success'>
+    <p>Your action involving @Model.Title was successful!</p>
+  </div>
+}
+
+<!--Add Book-->
+<div class="row">
+  <div class="col-md-5">
+    <h3>Add Book</h3>
+    <form action='/librarians/books/add' method='post'>
+      <div class='form-group'>
+        <label for='title'>Title</label><br>
+        <input name='title' type='text'>
+      </div>
+      <div class='form-group'>
+        <label for='author1'>Select Author(s)</label><br>
+        <select name='author1'>
+          <option value=''></option>
+          @foreach(@Author author in Author.GetAll())
+          {
+            <option value='@author.Id'>@author.LastName@(",") @author.GivenName</option>
+          }
+        </select>
+        <select name='author2'>
+          <option value=''></option>
+          @foreach(@Author author in Author.GetAll())
+          {
+            <option value='@author.Id'>@author.LastName@(",") @author.GivenName</option>
+          }
+        </select>
+        <p><a href='/librarians/authors'>add new authors</a></p>
+      </div>
+      <div class='form-group'>
+        <label for='cost'>Cost</label><br>
+        $<input name='cost' type='number' min="0.00" step='0.01' value="15.99" />
+      </div>
+      <div class='form-group'>
+        <label for='totalCount'>Amount in Inventory</label><br>
+        <input name='totalCount' type='number'>
+      </div>
+
+      <button class='btn btn-success' type='submit'>Add</button>
+    </form>
+    <br><br>
+  </div>
+
+  <!--Edit Book-->
+  <div class="col-md-7">
+    <h3>Edit Book</h3>
+    <form action='/librarians/books/lookup' method='post'>
+      <div class="form-group">
+        <select name='bookId'>
+          @if(Model != null)
+          {
+            <option selected value='@Model.Id'>@Model.Id | @Model.Title</option>
+          }
+          else
+          {
+            <option></option>
+          }
+          @foreach(Book book in Book.GetAll())
+          {
+            <option value='@book.Id'>@book.Id | @book.Title</option>
+          }
+        </select>
+        <button type='submit' class='btn btn-warning'>Look Up</button>
+      </div>
+    </form>
+    @if(Model != null)
+    {
+      <form action='/librarians/books/update/@Model.Id' method='post'>
+        <div class='form-group'>
+          <label for='title'>Title</label><br>
+          <input name='title' type='text' value='@Model.Title'>
+        </div>
+        <div>
+          <p>Current Authors</p>
+          <ul>
+            @foreach (Author author in @Model.GetAuthors())
+            {
+              <li>@author.LastName@(",") @author.GivenName | <a href='/librarians/books/@Model.Id/delete/@author.Id'>Delete</a></li>
+            }
+          </ul>
+        </div>
+        <div class='form-group'>
+          <label for='author'>Add Author(s)</label><br>
+          <select name='author'>
+            <option value=''></option>
+            @foreach(@Author author in Author.GetAll())
+            {
+              <option value='@author.Id'>@author.LastName@(",") @author.GivenName</option>
+            }
+          </select>
+        </div>
+        <div class='form-group'>
+          <label for='cost'>Cost</label><br>
+          $<input name='cost' type='number' min="0.00" step='0.01' value='@Model.Cost' />
+        </div>
+        <div class='form-group'>
+          <label for='totalCount'>Amount in Inventory</label><br>
+          <input name='totalCount' type='number' value='@Model.TotalCount'>
+        </div>
+
+        <button class='btn btn-success' type='submit'>Update</button>
+      </form>
+    }
+  </div>
+</div>
+<br><br>
+
+
+
+<!-- Nav buttons -->
+<a class='btn btn-info' href='/'>Home</a>
+<a class='btn btn-danger ml-3' href='/librarians'>Log Out</a>

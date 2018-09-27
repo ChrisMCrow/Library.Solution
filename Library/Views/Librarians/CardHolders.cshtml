@@ -11,26 +11,20 @@
     <a class="nav-link active">Card Holders</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="/librarians/inventory">Edit Inventory</a>
+    <a class="nav-link" href="/librarians/books">Books</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/librarians/authors">Authors</a>
   </li>
 </ul>
 <br><br>
 
 <!-- Confirmation Alert-->
-@if (@Model != null && @Model.GetType() == typeof(Checkout))
+@if (@Model != null)
 {
-  @if (!@Model.Returned)
-  {
-    <div class='alert-success'>
-      <p>New checkout successful! Checkout Id: @Model.Id. Item due back on @Model.DueDate</p>
-    </div>
-  }
-  else
-  {
-    <div class='alert-success'>
-      <p>Return successful! Checkout Id: @Model.Id. Book '@Book.Find(@Model.BookId).Title' was returned by @Patron.Find(@Model.PatronId).GivenName @Patron.Find(@Model.PatronId).LastName.</p>
-    </div>
-  }
+  <div class='alert-success'>
+    <p>Your action involving @Model.GivenName @Model.LastName was successful!</p>
+  </div>
 }
 
 

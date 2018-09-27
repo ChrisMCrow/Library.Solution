@@ -175,6 +175,48 @@ namespace Library.Models
             }
         }
 
+        public void AddBook(int bookId)
+        {
+            MySqlConnection conn = DB.Connection();
+            conn.Open();
+
+            var cmd = conn.CreateCommand() as MySqlCommand;
+            cmd.CommandText = @"INSERT INTO authors_books (author_id, book_id) VALUES (@authorId, @bookId);";
+
+            cmd.Parameters.AddWithValue("@authorId", this.Id);
+            cmd.Parameters.AddWithValue("@bookId", bookId);
+
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+            if (conn != null)
+            {
+                conn.Dispose();
+            }
+        }
+
+        public static void RemoveBookAuthor(int bookId, int authorId)
+        {
+            MySqlConnection conn = DB.Connection();
+            conn.Open();
+
+            var cmd = conn.CreateCommand() as MySqlCommand;
+            cmd.CommandText = @"DELETE FROM authors_books WHERE book_id = @bookId AND author_id = @authorId;";
+
+            cmd.Parameters.AddWithValue("@authorId", authorId);
+            cmd.Parameters.AddWithValue("@bookId", bookId);
+
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+            if (conn != null)
+            {
+                conn.Dispose();
+            }
+        }
+
+
+
         public List<Book> GetBooks()
         {
             MySqlConnection conn = DB.Connection();

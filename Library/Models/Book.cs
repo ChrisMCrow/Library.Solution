@@ -173,7 +173,7 @@ namespace Library.Models
         }
 
 
-        public void Update(string title, int totalCount, int cost)
+        public void Update(string title, int totalCount, float cost)
         {
             MySqlConnection conn = DB.Connection();
             conn.Open();
@@ -232,6 +232,26 @@ namespace Library.Models
             cmd.Parameters.AddWithValue("@searchId", this.Id);
 
             this.CurrentCount++;
+
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+            if (conn != null)
+            {
+                conn.Dispose();
+            }
+        }
+
+        public void AddAuthor(int authorId)
+        {
+            MySqlConnection conn = DB.Connection();
+            conn.Open();
+
+            var cmd = conn.CreateCommand() as MySqlCommand;
+            cmd.CommandText = @"INSERT INTO authors_books (author_id, book_id) VALUES (@authorId, @bookId);";
+
+            cmd.Parameters.AddWithValue("@authorId", authorId);
+            cmd.Parameters.AddWithValue("@bookId", this.Id);
 
             cmd.ExecuteNonQuery();
 
