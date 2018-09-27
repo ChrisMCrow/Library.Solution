@@ -62,7 +62,6 @@ namespace Library.Controllers
         {
             return View();
         }
-
         [HttpPost("/librarians/cardholder/add")]
         public ActionResult AddPatron(string lastName, string firstName)
         {
@@ -70,14 +69,12 @@ namespace Library.Controllers
             newPatron.Save();
             return View("CardHolders", newPatron);
         }
-
         [HttpPost("/librarians/cardholder/lookup")]
         public ActionResult LookupPatron(string patronId)
         {
             Patron foundPatron = Patron.Find(int.Parse(patronId));
             return View("CardHolders", foundPatron);
         }
-
         [HttpPost("/librarians/cardholder/update/{id}")]
         public ActionResult UpdatePatron(string lastName, string firstName, int id)
         {
@@ -86,12 +83,13 @@ namespace Library.Controllers
             return View("CardHolders", foundPatron);
         }
 
+
+//BOOKS
         [HttpGet("/librarians/books")]
         public ActionResult Books()
         {
             return View();
         }
-
         [HttpPost("/librarians/books/add")]
         public ActionResult AddBook(string title, string author1, string author2, string cost, string totalCount)
         {
@@ -111,22 +109,18 @@ namespace Library.Controllers
             }
             return RedirectToAction("Books");
         }
-
         [HttpGet("/librarians/books/lookup")]
         public ActionResult LookupBook(int id)
         {
             Book foundBook = Book.Find(id);
             return View("Books", foundBook);
         }
-
-
         [HttpPost("/librarians/books/lookup")]
         public ActionResult LookupBook(string bookId)
         {
             Book foundBook = Book.Find(int.Parse(bookId));
             return View("Books", foundBook);
         }
-
         [HttpPost("/librarians/books/update/{id}")]
         public ActionResult UpdateBook(string title, string author, string cost, string totalCount, int id)
         {
@@ -141,12 +135,51 @@ namespace Library.Controllers
             }
             return View("Books", foundBook);
         }
-
         [HttpGet("/librarians/books/{bookId}/delete/{authorId}")]
         public ActionResult RemoveBookAuthor(int bookId, int authorId)
         {
             Author.RemoveBookAuthor(bookId, authorId);
             return RedirectToAction("LookupBook", new{id = bookId});
         }
+        // [HttpGet("/librarians/books/delete/{id}")]
+        // public ActionResult DeleteBook(int id)
+        // {
+        //     Book.Find(id).Delete();
+        //     return RedirectToAction("Books");
+        // }
+
+
+//AUTHORS
+        [HttpGet("/librarians/authors")]
+        public ActionResult Authors()
+        {
+            return View();
+        }
+        [HttpPost("/librarians/authors/add")]
+        public ActionResult AddAuthor(string lastName, string firstName)
+        {
+            Author newAuthor = new Author(lastName, firstName);
+            newAuthor.Save();
+            return View("Authors", newAuthor);
+        }
+        [HttpPost("/librarians/authors/lookup")]
+        public ActionResult LookupAuthor(string authorId)
+        {
+            Author foundAuthor = Author.Find(int.Parse(authorId));
+            return View("Authors", foundAuthor);
+        }
+        [HttpPost("/librarians/authors/update/{id}")]
+        public ActionResult UpdateAuthor(string lastName, string firstName, int id)
+        {
+            Author foundAuthor = Author.Find(id);
+            foundAuthor.Update(lastName, firstName);
+            return View("Authors", foundAuthor);
+        }
+        // [HttpGet("/librarians/authors/delete/{id}")]
+        // public ActionResult DeleteAuthor(int id)
+        // {
+        //     Author.Find(id).Delete();
+        //     return RedirectToAction("Authors");
+        // }
     }
 }

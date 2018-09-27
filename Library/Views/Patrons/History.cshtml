@@ -1,0 +1,48 @@
+@using Library.Models;
+
+<h2>@Model.GivenName @Model.LastName Dashboard</h2>
+<hr>
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="/patrons/@Model.Id/">Current Checkouts</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active">History</a>
+  </li>
+</ul>
+<br><br>
+<h3>Books You have checked out before</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Authors</th>
+      <th scope="col">Checkout Date</th>
+      <th scope="col">Due Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (Checkout instance in @Model.GetCheckoutHistory())
+    {
+      <tr>
+        <td>@Book.Find(@instance.BookId).Title</td>
+        <td>
+          @foreach (Author author in @Book.Find(@instance.BookId).GetAuthors())
+          {
+            @author.LastName
+            @(", ") @author.GivenName <br>
+          }
+        </td>
+        <td>@instance.CheckoutDate</td>
+        <td>@instance.DueDate</td>
+      </tr>
+    }
+  </tbody>
+</table>
+<br><br>
+<a class='btn btn-info ml-3' href='/'>Home</a>
+<a class='btn btn-danger ml-3' href='/patrons'>Log Out</a>
+<a class='btn btn-success ml-3' href='/librarians'>Librarian Log In</a>
+
+<br><br>

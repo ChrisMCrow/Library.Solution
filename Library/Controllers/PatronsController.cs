@@ -34,7 +34,12 @@ namespace Library.Controllers
         [HttpGet("/patrons/{id}")]
         public ActionResult Details(int id)
         {
+            return View(Patron.Find(id));
+        }
 
+        [HttpGet("/patrons/{id}/history")]
+        public ActionResult History(int id)
+        {
             return View(Patron.Find(id));
         }
     }
