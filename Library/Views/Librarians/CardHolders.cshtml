@@ -1,0 +1,96 @@
+@using Library.Models;
+
+<h2>Librarian Dashboard</h2>
+<hr>
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href='/librarians/dashboard'>Checkouts</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active">Card Holders</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/librarians/inventory">Edit Inventory</a>
+  </li>
+</ul>
+<br><br>
+
+<!-- Confirmation Alert-->
+@if (@Model != null && @Model.GetType() == typeof(Checkout))
+{
+  @if (!@Model.Returned)
+  {
+    <div class='alert-success'>
+      <p>New checkout successful! Checkout Id: @Model.Id. Item due back on @Model.DueDate</p>
+    </div>
+  }
+  else
+  {
+    <div class='alert-success'>
+      <p>Return successful! Checkout Id: @Model.Id. Book '@Book.Find(@Model.BookId).Title' was returned by @Patron.Find(@Model.PatronId).GivenName @Patron.Find(@Model.PatronId).LastName.</p>
+    </div>
+  }
+}
+
+
+<div class="row">
+  <div class="col-md-5">
+    <h3>Add Patron</h3>
+    <form action='/librarians/cardholder/add' method='post'>
+      <div class='form-group'>
+        <label for='firstName'>First Name</label><br>
+        <input name='firstName' type='text'>
+      </div>
+      <div class='form-group'>
+        <label for='lastName'>Last Name</label><br>
+        <input name='lastName' type='text'>
+      </div>
+      <button class='btn btn-success' type='submit'>Add</button>
+    </form>
+    <br><br>
+  </div>
+  <div class="col-md-7">
+    <h3>Edit Patron</h3>
+    <form action='/librarians/cardholder/lookup' method='post'>
+      <div class="form-group">
+        <select name='patronId'>
+          @if(Model != null)
+          {
+            <option selected value='@Model.Id'>@Model.Id | @Model.LastName@(",") @Model.GivenName</option>
+          }
+          else
+          {
+            <option></option>
+          }
+          @foreach(Patron patron in Patron.GetAll())
+          {
+            <option value='@patron.Id'>@patron.Id | @patron.LastName@(", ") @patron.GivenName</option>
+          }
+        </select>
+        <button type='submit' class='btn btn-warning'>Look Up</button>
+      </div>
+    </form>
+    @if(Model != null)
+    {
+      <form action='/librarians/cardholder/update/@Model.Id' method='post'>
+        <div class='form-group'>
+          <label for='firstName'>First Name</label><br>
+          <input name='firstName' type='text'>
+        </div>
+        <div class='form-group'>
+          <label for='lastName'>Last Name</label><br>
+          <input name='lastName' type='text'>
+        </div>
+        <button class='btn btn-success' type='submit'>Update</button>
+      </form>
+      <a href='/patrons/@Model.Id'>View History for  @Model.GivenName @Model.LastName</a>
+    }
+  </div>
+</div>
+
+
+
+<!-- Nav buttons -->
+<a class='btn btn-info' href='/'>Home</a>
+<a class='btn btn-danger ml-3' href='/librarians'>Log Out</a>

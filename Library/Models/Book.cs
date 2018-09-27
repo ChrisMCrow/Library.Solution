@@ -228,7 +228,7 @@ namespace Library.Models
             var cmd = conn.CreateCommand() as MySqlCommand;
             cmd.CommandText = @"UPDATE books SET current_count = @newCount WHERE id = @searchId;";
 
-            cmd.Parameters.AddWithValue("@newCount", this.CurrentCount++);
+            cmd.Parameters.AddWithValue("@newCount", this.CurrentCount + 1);
             cmd.Parameters.AddWithValue("@searchId", this.Id);
 
             this.CurrentCount++;

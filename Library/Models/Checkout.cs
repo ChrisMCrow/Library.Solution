@@ -177,7 +177,7 @@ namespace Library.Models
             conn.Open();
 
             var cmd = conn.CreateCommand() as MySqlCommand;
-            cmd.CommandText = @"UPDATE patrons SET returned = 1 WHERE id = @searchId;";
+            cmd.CommandText = @"UPDATE checkouts SET returned = 1 WHERE id = @searchId;";
 
             cmd.Parameters.AddWithValue("@searchId", this.Id);
 
