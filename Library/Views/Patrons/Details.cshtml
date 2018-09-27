@@ -1,10 +1,14 @@
 @using Library.Models;
 
-<h2>@Model.GivenName @Model.LastName details</h2>
+<h2>@Model.GivenName @Model.LastName Details</h2>
 <hr>
 @if (Model.OverDue)
 {
   <p class="alert-danger">ALERT: You owe $@Model.GetAmountDue() in overdue fines.</p>
+}
+else
+{
+  <p class="alert-info">ALERT: You have no overdue books.</p>  
 }
 <h3>Books You Currently Have Checked Out</h3>
 <table class="table">
@@ -57,3 +61,4 @@
 </table>
 <br><br>
 <a class='btn btn-info ml-3' href='/'>Home</a>
+<a class='btn btn-danger ml-3' href='/patrons'>Log Out</a>

@@ -1,8 +1,16 @@
-<div class="container">
-    <div class="jumbotron">
-        <h1>Librarians</h1>
+<h2>Librarian Log In</h2>
+<hr />
+<div class="col-md-4">
+  <form action="/librarians/dashboard" method="get">
+    <div class="form-group">
+      <label for="libraryNumber">Enter Library Card Number</label>
+      <input class="form-control" type="number" name="libraryNumber" />
     </div>
-    <button onclick="window.location.href='/'" class='btn btn-info ml-4'>Home</button>
-    <a class='btn btn-primary ml-4' href='/patrons'>Patron</a>
-
+    <div class="form-group">
+      <label for="password">Enter Password</label>
+      <input class="form-control" type="password" name="password" required/>
+    </div>
+    <button type="submit" class="btn btn-danger">Log In</button>
+    <a class='btn btn-info ml-3' href='/'>Home</a>
+  </form>
 </div>

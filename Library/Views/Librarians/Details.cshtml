@@ -1,0 +1,90 @@
+@using Library.Models;
+
+<h2>Librarian Dashboard</h2>
+<hr>
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active">Checkouts</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Card Holders</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Edit Inventory</a>
+  </li>
+</ul>
+<br><br>
+
+<!-- Confirmation Alert-->
+@if (@Model != null)
+{
+  @if (!@Model.Returned)
+  {
+    <div class='alert-success'>
+      <p>New checkout successful! Checkout Id: @Model.Id. Item due back on @Model.DueDate</p>
+    </div>
+  }
+}
+
+<!-- Checkout Form -->
+<div class="row">
+  <div class="col-md-6">
+    <h3>Checkout</h3>
+    <form action='/librarians/checkout' method='post'>
+      <div class='form-group'>
+        <label for='patronId'>Select Patron</label><br>
+        <select name='patronId'>
+          @foreach (var patron in @Patron.GetAll())
+          {
+            <option value='@patron.Id'>@patron.Id | @patron.LastName @(", ") @patron.GivenName</option>
+          }
+        </select>
+      </div>
+      <div class='form-group'>
+        <label for='bookId'>Select Book</label><br>
+        <select name='bookId'>
+          @foreach (var book in @Book.GetAll())
+          {
+            <option value='@book.Id'>@book.Id | @book.Title @(", ") @book.CurrentCount</option>
+          }
+        </select>
+      </div>
+      <div class='form-group'>
+        <label for='dueDate'>Select Due Date</label><br>
+        <input type='number' name='dueDate' value='14'> days
+      </div>
+      <button type='submit' class='btn btn-warning'>Create Checkout</button>
+      <br><br>
+    </form>
+  </div>
+
+<!-- Return Form -->
+  <div class="col-md-6">
+    <h3>Checkout</h3>
+    <form action='/librarians/dashboard' method='post'>
+      <div class='form-group'>
+        <label for='patronId'>Select Patron</label><br>
+        <select name='patronId'>
+          @foreach (var patron in @Patron.GetAll())
+          {
+            <option value='@patron.Id'>@patron.Id | @patron.LastName @(", ") @patron.GivenName</option>
+          }
+        </select>
+      </div>
+      <div class='form-group'>
+        <label for='bookId'>Select Book</label><br>
+        <select name='bookId'>
+          @foreach (var book in @Book.GetAll())
+          {
+            <option value='@book.Id'>@book.Id | @book.Title @(", ") @book.CurrentCount</option>
+          }
+        </select>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Nav buttons -->
+<a class='btn btn-info' href='/'>Home</a>
+<a class='btn btn-danger ml-3' href='/librarians'>Log Out</a>

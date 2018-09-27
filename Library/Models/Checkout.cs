@@ -53,7 +53,7 @@ namespace Library.Models
             conn.Open();
 
             MySqlCommand cmd = conn.CreateCommand();
-            cmd.CommandText = @"INSERT INTO patrons (book_id, patrons_id, chekout_date, due_date, returned) VALUES (@bookId, @patronsId, @checkoutDate, @dueDate, @returned);";
+            cmd.CommandText = @"INSERT INTO checkouts (book_id, patrons_id, checkout_date, due_date, returned) VALUES (@bookId, @patronsId, @checkoutDate, @dueDate, @returned);";
 
             cmd.Parameters.AddWithValue("@bookId", this.BookId);
             cmd.Parameters.AddWithValue("@patronsId", this.PatronId);
@@ -222,7 +222,6 @@ namespace Library.Models
             if (returned == false && due < DateTime.Now)
             {
                 conn.Open();
-                Console.WriteLine("id" + this.Id + " returned" + returned + " patronID" + this.PatronId);
                 cmd.CommandText = @"UPDATE patrons SET patrons.overdue = 1 WHERE patrons.id = @patronId;";
                 cmd.Parameters.AddWithValue("@patronId", newCheckout.PatronId);
                 cmd.ExecuteNonQuery();
